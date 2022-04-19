@@ -1,16 +1,15 @@
 #include <ncurses.h>
 
-#include "../include/map.h"
+#include "../include/game.h"
 
 int main()
 {
-	Map currLevel("./asset/map/level0.txt");
+	Game curr;
+	int ch, status = 0;
 
 	// Main game loop
-	int ch;
 	while ((ch = getch()) != 'q') {
-		;
+		status = curr.nextTurn(ch);
 	}
-
 	return 0;
 }

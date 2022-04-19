@@ -10,6 +10,7 @@ class Map {
 	private:
 		std::string levelLayout[MAP_LINES];
 	public:
+		void print();
 		Map(std::string filename);
 		~Map();
 };

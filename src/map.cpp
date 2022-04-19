@@ -5,6 +5,13 @@
 
 #include "../include/map.h"
 
+void Map::print() {
+	// Print the map
+	for (int i = 0; i < 24; i++)
+		mvprintw(i, 0, levelLayout[i].c_str());
+	refresh();
+}
+
 Map::Map(std::string filename)
 {
 	std::ifstream level;
@@ -30,13 +37,10 @@ Map::Map(std::string filename)
 
 	// Don't echo key presses
 	noecho();
+	// Hide cursor
+	curs_set(0);
 
-	// Print the map
-	for (int i = 0; i < 24; i++) {
-		printw(levelLayout[i].c_str());
-		addch('\n');
-	}
-	refresh();
+	print();
 }
 
 Map::~Map()
