@@ -3,20 +3,21 @@
 
 #include <vector>
 
-#include "../include/item.h"
 #include "../include/map.h"
 #include "../include/monster.h"
 #include "../include/player.h"
+
+#define MAX_MONSTER_SPAWN_COUNT 10
 
 class Game {
 	private:
 		Player *pl;
 		Map *map;
-		//std::vector<Monster> monsters;
-		//std::vector<Item> items;
+		std::vector<Monster> monsters;
 	public:
 		int state;
 		int nextTurn(int c);
+		void print();
 		Game();
 		~Game();
 };

@@ -8,7 +8,7 @@ int main()
 	int ch, status = 0;
 
 	// Main game loop
-	while ((ch = getch()) != 'q') {
+	while ((ch = getch()) != 'q' && !status) {
 		status = curr.nextTurn(ch);
 	}
 	return 0;

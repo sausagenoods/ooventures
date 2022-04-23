@@ -3,9 +3,12 @@
 
 #include "../include/character.h"
 
-class Monster: Character {
+class Monster: public Character {
+	private:
+		bool fight;
 	public:
 		void move(int c);
+		using Character::Character;
 };
 
 #endif

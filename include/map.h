@@ -7,11 +7,9 @@
 #define MAP_LINES 24
 
 class Map {
-	private:
-		std::string levelLayout[MAP_LINES];
 	public:
 		void print();
-		Map(std::string filename);
+		Map();
 		~Map();
 };
 

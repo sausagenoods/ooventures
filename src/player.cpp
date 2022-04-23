@@ -1,28 +1,24 @@
 #include "../include/player.h"
-
-Player::Player(int xpos, int ypos, char sym, int hp, int ap)
-{
-	x = xpos;
-	y = ypos;
-	symbol = sym;
-	health = hp;
-	damage = ap;
-}
+#include "../include/common.h"
 
 void Player::move(int c)
 {
 	switch(c) {
 		case 'w':
-			y -= 1;
+			if (checkBoundaries(y - 1, x))
+				y -= 1;
 			break;
 		case 'a':
-			x -= 1;
+			if (checkBoundaries(y, x - 1))
+				x -= 1;
 			break;
 		case 's':
-			y += 1;
+			if (checkBoundaries(y + 1, x))
+				y += 1;
 			break;
 		case 'd':
-			x += 1;
+			if (checkBoundaries(y, x + 1))
+				x += 1;
 			break;
 	}
 }

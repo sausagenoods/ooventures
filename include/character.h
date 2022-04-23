@@ -11,6 +11,7 @@ class Character : public Entity {
 		bool hostile;
 	public:
 		virtual void move(int c) = 0;
+		Character(char sym, int hp, int ap);
 };
 
 #endif

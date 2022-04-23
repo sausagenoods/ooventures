@@ -12,7 +12,7 @@ class Player : public Character {
 		unsigned int item_ap;
 	public:
 		void move(int c);
-		Player(int xpos, int ypos, char sym, int hp, int ap);
+		using Character::Character;
 };
 
 #endif

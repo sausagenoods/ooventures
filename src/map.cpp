@@ -7,34 +7,17 @@
 
 void Map::print() {
 	// Print the map
-	for (int i = 0; i < 24; i++)
-		mvprintw(i, 0, levelLayout[i].c_str());
+	for (int y = 0; y < LINES; y++)
+		for (int x = 0; x < COLS; x++)
+			mvaddch(y, x, '.');
+	box(stdscr, 0, 0);
 	refresh();
 }
 
-Map::Map(std::string filename)
+Map::Map()
 {
-	std::ifstream level;
-
-	level.open(filename);
-	if (!level.is_open()) {
-		std::cout << "Error loading map." << std::endl;
-		std::exit(1);
-	}
-
-	for (int i = 0; i < MAP_LINES; i++)
-		getline(level, levelLayout[i]);
-
-	level.close();
-
 	// Initialize ncurses
 	initscr();
-	if (LINES < MAP_LINES || COLS < MAP_COLS) {
-		endwin();
-		std::cout << "Terminal too small." << std::endl;
-		std::exit(2);
-	}
-
 	// Don't echo key presses
 	noecho();
 	// Hide cursor
