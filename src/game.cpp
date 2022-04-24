@@ -12,6 +12,14 @@ Game::Game()
 		Monster m('$', 5, 20);
 		monsters.push_back(m);
 	}
+
+	// Enable colors
+	start_color();
+	init_pair(1, COLOR_BLUE, COLOR_BLACK);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
+	init_pair(3, COLOR_RED, COLOR_BLACK);
+
+	mvprintw(0, 0, "Press any key to start.");
 }
 
 int Game::nextTurn(int c)
@@ -30,7 +38,9 @@ int Game::nextTurn(int c)
 		mvprintw(0, 0, "Invalid keypress. Press 'h' for help.");
 		return 0;
 	}
+
 	pl->move(c);
+
 	for (auto i = monsters.begin(); i != monsters.end(); i++)
 		i->move(c);
 
@@ -39,12 +49,20 @@ int Game::nextTurn(int c)
 
 void Game::print()
 {
+	attron(COLOR_PAIR(1));
 	map->print();
+	attroff(COLOR_PAIR(1));
+
+	attron(COLOR_PAIR(2));
 	pl->print();
+	attron(COLOR_PAIR(2));
+
+	attron(COLOR_PAIR(3));
 	for (auto i = monsters.begin(); i != monsters.end(); i++)
 		i->print();
-
+	attroff(COLOR_PAIR(3));
 }
+
 Game::~Game()
 {
 	delete pl;

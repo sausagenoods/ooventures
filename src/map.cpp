@@ -10,6 +10,7 @@ void Map::print() {
 	for (int y = 0; y < LINES; y++)
 		for (int x = 0; x < COLS; x++)
 			mvaddch(y, x, '.');
+
 	box(stdscr, 0, 0);
 	refresh();
 }
