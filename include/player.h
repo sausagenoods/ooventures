@@ -1,18 +1,13 @@
 #ifndef player_h
 #define player_h
 
-#include <string>
-#include "../include/character.h"
+#include "../include/entity.h"
 
-class Player : public Character {
-	private:
-		std::string item;
-		// Extra attack and health points from current item
-		unsigned int item_hp;
-		unsigned int item_ap;
+class Player : public Entity {
 	public:
 		void move(int c);
-		using Character::Character;
+		Position aroundMonster();
+		using Entity::Entity;
 };
 
 #endif

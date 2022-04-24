@@ -11,11 +11,13 @@
 
 class Game {
 	private:
-		Player *pl;
+		Player *player;
 		Map *map;
 		std::vector<Monster> monsters;
+
 	public:
 		int state;
+		std::vector<Monster>::iterator getMonsterNearby(Position mPos);
 		int nextTurn(int c);
 		void print();
 		Game();

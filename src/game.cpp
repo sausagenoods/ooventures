@@ -7,9 +7,9 @@ Game::Game()
 	// For randomness of spawns
 	srand(time(NULL));
 	map = new Map();
-	pl = new Player('@', 100, 100);
+	player = new Player('@', 100, 3);
 	for (int i = 0; i < MAX_MONSTER_SPAWN_COUNT; i++) {
-		Monster m('$', 5, 20);
+		Monster m('$', 5, 5);
 		monsters.push_back(m);
 	}
 
@@ -39,12 +39,53 @@ int Game::nextTurn(int c)
 		return 0;
 	}
 
-	pl->move(c);
+	// Check if there are any monsters next to the player
+	// If there are return their position
+	Position monsterPos = player->aroundMonster();
+
+	int playerHp, monsterHp;
+	bool inFight = false;
+	std::vector<Monster>::iterator nearbyMonsterIter;
+	Monster *nearbyMonster;
+
+	if (monsterPos.x != -1) {
+		inFight = true;
+		nearbyMonsterIter = getMonsterNearby(monsterPos);
+		nearbyMonster = &(*nearbyMonsterIter);
+	}
+
+	// Initiate fight until someone dies
+	while (inFight) {
+		playerHp = *player - *nearbyMonster;
+		monsterHp = *nearbyMonster - *player;
+		if (playerHp <= 0) {
+			mvprintw(0, 0, "You have been slain.");
+			return 0;
+		} else if (monsterHp <= 0) {
+			mvprintw(0, 0, "The monster has been slain.");
+			monsters.erase(nearbyMonsterIter);
+			inFight = false;
+		} else {
+			mvprintw(0, 0, "Player: %d HP\tMonster: %d HP", playerHp,
+				monsterHp);
+		}
+		return 0;
+	}
+
+	player->move(c);
 
 	for (auto i = monsters.begin(); i != monsters.end(); i++)
 		i->move(c);
 
 	return 0;
+}
+
+std::vector<Monster>::iterator Game::getMonsterNearby(Position mPos)
+{
+	for (auto i = monsters.begin(); i != monsters.end(); i++) {
+		if (i->pos.y == mPos.y && i->pos.x == mPos.x)
+			return i;
+	}
 }
 
 void Game::print()
@@ -54,7 +95,7 @@ void Game::print()
 	attroff(COLOR_PAIR(1));
 
 	attron(COLOR_PAIR(2));
-	pl->print();
+	player->print();
 	attron(COLOR_PAIR(2));
 
 	attron(COLOR_PAIR(3));
@@ -65,6 +106,6 @@ void Game::print()
 
 Game::~Game()
 {
-	delete pl;
+	delete player;
 	delete map;
 }

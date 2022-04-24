@@ -1,17 +1,26 @@
-#ifndef entity_h
-#define entity_h
+#ifndef character_h
+#define character_h
 
-#include <string>
+#include "../include/common.h"
 
-// Represents any entity that appears on the map.
+// Represent an entity that can move around the map
 class Entity {
 	protected:
-		int x;
-		int y;
 		char symbol;
-		std::string name;
+		int health;
+
 	public:
+		Position pos;
+		unsigned int damage;
+
 		void print();
+		virtual void move(int c) = 0;
+		Entity(char sym, int hp, int ap);
+
+		int operator - (Entity const &obj) {
+			health -= obj.damage;
+			return health;
+		}
 };
 
 #endif

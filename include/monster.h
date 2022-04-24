@@ -1,14 +1,12 @@
 #ifndef monster_h
 #define monster_h
 
-#include "../include/character.h"
+#include "../include/entity.h"
 
-class Monster: public Character {
-	private:
-		bool fight;
+class Monster: public Entity {
 	public:
 		void move(int c);
-		using Character::Character;
+		using Entity::Entity;
 };
 
 #endif
