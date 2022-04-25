@@ -9,5 +9,6 @@ typedef struct {
 } Position;
 
 bool checkBoundaries(int y, int x);
+void moveWASD(Position *pos, int c);
 
 #endif

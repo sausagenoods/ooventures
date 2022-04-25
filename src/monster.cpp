@@ -5,7 +5,7 @@
 
 void Monster::move(int c)
 {
-	int move = (rand() % 5);
+	int move = (rand() % 6);
 	switch (move) {
 		case 0:
 			if (checkBoundaries(pos.y - 1, pos.x))
@@ -25,6 +25,10 @@ void Monster::move(int c)
 			break;
 		case 4:
 			// Once in a while stay still
+			break;
+		case 5:
+			// Once in a while run away from the player
+			moveWASD(&pos, c);
 			break;
 	}
 }

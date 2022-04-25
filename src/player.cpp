@@ -5,24 +5,7 @@
 
 void Player::move(int c)
 {
-	switch(c) {
-		case 'w':
-			if (checkBoundaries(pos.y - 1, pos.x))
-				pos.y -= 1;
-			break;
-		case 'a':
-			if (checkBoundaries(pos.y, pos.x - 1))
-				pos.x -= 1;
-			break;
-		case 's':
-			if (checkBoundaries(pos.y + 1, pos.x))
-				pos.y += 1;
-			break;
-		case 'd':
-			if (checkBoundaries(pos.y, pos.x + 1))
-				pos.x += 1;
-			break;
-	}
+	moveWASD(&pos, c);
 }
 
 #define cAround(y, x) (mvinch(y,x) & A_CHARTEXT)
@@ -30,7 +13,6 @@ void Player::move(int c)
 Position Player::aroundMonster()
 {
 	Position temp;
-
 	// Impossible location default
 	temp.x = -1;
 
