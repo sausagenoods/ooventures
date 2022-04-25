@@ -20,7 +20,7 @@ class Game {
 		std::vector<Monster>::iterator getMonsterNearby(Position mPos);
 		int nextTurn(int c);
 		void print();
-		Game();
+		Game(int difficulty);
 		~Game();
 };
 

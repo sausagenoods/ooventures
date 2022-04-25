@@ -2,14 +2,42 @@
 
 #include "../include/game.h"
 
-Game::Game()
+Game::Game(int difficulty)
 {
-	// For randomness of spawns
+	int playerHp, playerAp, monsterHp, monsterBaseAp, monsterSpawnCount;
+	switch (difficulty) {
+		// Easy
+		case 1:
+			playerHp = 100;
+			playerAp = 3;
+			monsterHp = 5;
+			monsterBaseAp = 5;
+			monsterSpawnCount = 10;
+			break;
+		// Medium
+		case 2:
+			playerHp = 90;
+			playerAp = 3;
+			monsterHp = 10;
+			monsterBaseAp = 10;
+			monsterSpawnCount = 10;
+			break;
+		// Hardcore
+		case 3:
+			playerHp = 70;
+			playerAp = 5;
+			monsterHp = 20;
+			monsterBaseAp = 10;
+			monsterSpawnCount = 15;
+			break;
+	}
+
+	// For randomness of spawns and attack points
 	srand(time(NULL));
 	map = new Map();
-	player = new Player('@', 100, 3);
-	for (int i = 0; i < MAX_MONSTER_SPAWN_COUNT; i++) {
-		Monster m('$', 5, 5);
+	player = new Player('@', playerHp, playerAp);
+	for (int i = 0; i < monsterSpawnCount; i++) {
+		Monster m('$', monsterHp, rand() % monsterBaseAp + 1);
 		monsters.push_back(m);
 	}
 
@@ -59,11 +87,15 @@ int Game::nextTurn(int c)
 		playerHp = *player - *nearbyMonster;
 		monsterHp = *nearbyMonster - *player;
 		if (playerHp <= 0) {
-			mvprintw(0, 0, "You have been slain.");
-			return 0;
+			return 1;
 		} else if (monsterHp <= 0) {
 			mvprintw(0, 0, "The monster has been slain.");
 			monsters.erase(nearbyMonsterIter);
+
+			// All monsters were killed
+			if (!monsters.size())
+				return 2;
+
 			inFight = false;
 		} else {
 			mvprintw(0, 0, "Player: %d HP\tMonster: %d HP", playerHp,
@@ -86,6 +118,8 @@ std::vector<Monster>::iterator Game::getMonsterNearby(Position mPos)
 		if (i->pos.y == mPos.y && i->pos.x == mPos.x)
 			return i;
 	}
+	// Here will never be reached
+	return monsters.end();
 }
 
 void Game::print()
