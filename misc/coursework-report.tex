@@ -1,0 +1,157 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{caption}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+  language=C++,
+  numbers=left,
+  stepnumber=1,
+  numbersep=5pt,
+  basicstyle=\small\ttfamily\bfseries,
+  keywordstyle=\color{blue},
+  commentstyle=\color{green},
+  showspaces=false,
+  showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=true,
+}
+
+\author{Student: Zehra İrem Kuyucu, ITfuc-21\\Lecturer: Julius Čepukėnas}
+\title{Vilnius Gediminas Technical University\\Department of Information Technology\\
+\vspace{50mm}Coursework Report\\Ooventures}
+\begin{document}
+
+\maketitle
+
+\newpage
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+Ooventures, stands for "OOP adventures", is a very minimalistic rougelike\cite{rouge} game. The main goal of the player is to defeat all monsters and be the last entity standing on the map. The map is generated based on terminal size. The number of monsters spawned, health and attack points differ based on the difficulty setting.
+
+Ooventures is available under WTFPL license on \href{https://github.com/sausagenoods/ooventures}{Github}.
+
+\section{Libraries}
+The standard library functions are provided by the GNU C++ Standard Library.\cite{libstdcpp}
+
+Ncurses library is used for the text-based user interface.\cite{ncurses}
+
+\section{Classes}
+\subsection{Map}
+This class represents the map in the background. The constructor of this class initializes Ncurses and colors. \verb|Map::print()| prints the map, a dotted background and a frame that is as big as the terminal size. The destructor function restores the terminal by ending Ncurses mode.
+\begin{lstlisting}
+class Map {
+	public:
+		void print();
+		Map();
+		~Map();
+};
+\end{lstlisting}
+
+\newpage
+
+\subsection{Entity}
+This class represents any entity that is spawned on the map. Entities are capable of moving and dealing damage. The \verb|Monster| and \verb|Player| classes are inherited from this class. Using the \verb|protected| keyword instead of \verb|private| allows the members \verb|symbol| and \verb|health| to be accesible within these derived classes. \verb|move(int c)| is a virtual member function, because the derived classes contain different definitions of it. \verb|symbol| contains the character that is printed on screen each time the entity moves.
+
+The subtraction operator is overriden in this class. Whenever two \verb|Entity| type objects are subtracted from each other, the initial one's health score is lowered based on the latter's damage score. This way two entities on the map can deal damage to each other.
+
+\begin{lstlisting}
+class Entity {
+	protected:
+		char symbol;
+		int health;
+
+	public:
+		Position pos;
+		unsigned int damage;
+
+		void print();
+		virtual void move(int c) = 0;
+		Entity(char sym, int hp, int ap);
+
+		int operator - (Entity const &obj) {
+			health -= obj.damage;
+			return health;
+		}
+};
+\end{lstlisting}
+
+\newpage
+
+\subsection{Player}
+This class represents the entity that is controlled by the player. \verb|move(int c)| takes a key code as an argument and moves accordingly. \verb|aroundMonster()| returns the coordinates of a monster that is next to the player. \verb|using Entity::Entity| allows \verb|Player| class objects to be initialized using the same constructor from the \verb|Entity| class.
+\begin{lstlisting}
+class Player : public Entity {
+	public:
+		void move(int c);
+		Position aroundMonster();
+		using Entity::Entity;
+};
+\end{lstlisting}
+
+\subsection{Monster}
+This class represents monsters whose movements are out of the player's control. \verb|move(int c)| randomizes monsters' movements. The key code of the player is still passed to this function, because once in a while monsters run away from the player. The constructor of the \verb|Entity| class is used, yet again.
+\begin{lstlisting}
+class Monster: public Entity {
+	public:
+		void move(int c);
+		using Entity::Entity;
+};
+\end{lstlisting}
+
+\newpage
+
+\subsection{Game}
+This class represents the current game and its state. It contains the monsters, the player and the map. The constructor function cares about the difficulty level. Based on the level different number of monsters are spawned, the entities have different health and attack points. \verb|state| contains the current game state: 0 is for ongoing, 1 is for loss and 2 is for player victory. \verb|getMonsterNearby(Position mPos)| returns an iterator to the monster who is next to the player. Later on damage is dealt to that monster. \verb|nextTurn(int c)| moves entities and updates state. \verb|print()| prints the map and the entities.
+
+\begin{lstlisting}
+class Game {
+	private:
+		Player *player;
+		Map *map;
+		std::vector<Monster> monsters;
+
+	public:
+		int state;
+		std::vector<Monster>::iterator getMonsterNearby(Position mPos);
+		int nextTurn(int c);
+		void print();
+		Game(int difficulty);
+		~Game();
+};
+\end{lstlisting}
+
+\newpage
+
+\section{Building and Running}
+Ooventures can be built using the provided Makefile.\\
+\verb|$ cd ooventures && make|\\
+The produced binary requires a difficulty level to be specified.\\
+\verb|$ ./ooventures [difficulty level 1 to 3]|\\
+The difficulty levels are as described:
+\begin{enumerate}
+  \item Easy.
+  \item Medium.
+  \item Hardcore.
+\end{enumerate}
+The game has two outcomes, the player has won or the player has been slain. The first occurs when the player kills all the monsters (monsters vector is empty), the latter occurs when the player dies (runs out of health points) when there are still monsters.
+
+\section{Limitations}
+This program does not handle the \verb|SIGWINCH| signal and therefore is unable to resize in case the terminal is resized. The terminal size must not be changed or else the window might be broken.
+
+In case of a fight between the player and a monster, the player is unable to move until the fight comes to an end.
+
+\begin{thebibliography}{1}
+  \bibitem{rouge} Rougelike on Wikipedia. \emph{https://en.wikipedia.org/wiki/Roguelike}
+  \bibitem{libstdcpp} The GNU C++ Library. \emph{https://gcc.gnu.org/onlinedocs/libstdc++}
+  \bibitem{ncurses} NCURSES - New Curses. \emph{https://invisible-island.net/ncurses}
+\end{thebibliography}
+
+\end{document}
+
