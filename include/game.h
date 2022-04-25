@@ -7,8 +7,6 @@
 #include "../include/monster.h"
 #include "../include/player.h"
 
-#define MAX_MONSTER_SPAWN_COUNT 10
-
 class Game {
 	private:
 		Player *player;
